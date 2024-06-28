@@ -5,6 +5,24 @@ body {
   color: #282828;
 }
 
+.color-circle {
+  width: 50px;
+  height: 50px;
+  margin-top: 8px;
+  border: 2px solid #d8d8d8;
+  border-radius: 50%;
+}
+
+.disabledButton {
+  background-color: #d8d8d8;
+  cursor: not-allowed;
+}
+
+.out-of-stock-image {
+  filter: grayscale(100%);
+}
+
+
 .button {
   margin: 30px;
   background-color: #39495c;
