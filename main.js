@@ -1,12 +1,13 @@
-const { createApp, ref } = Vue
+const { createApp, ref, computed } = Vue
 
 createApp({
   setup() {
     const product = ref('Boots')
+    const brand = ref('SE 331')
     //description of boots
-    const description = ref('A pair of fashionable, comfortable boots.')
-    const image = ref('./assets/images/socks_green.jpg')
-    const inStock = ref(true)
+    //const description = ref('A pair of fashiinonable, comfortable boots.')
+    //const image = ref('./assets/images/socks_green.jpg')
+    //const inStock = ref(true)
     const inventory = ref(100)
     const onSale = ref(true)
     const details = ref([
@@ -15,16 +16,42 @@ createApp({
         '20% polyester'
     ]);
     const variants = ref([
-      { id: 2234, color: 'green', image: './assets/images/socks_green.jpg' },
-      { id: 2235, color: 'blue', image: './assets/images/socks_blue.jpg' }
+      { id: 2234, color: 'green', image: './assets/images/socks_green.jpg', quantity: 50 },
+      { id: 2235, color: 'blue', image: './assets/images/socks_blue.jpg', quantity: 0 }
     ]);
+    const selectedVariant = ref(0)
     const sizes = ref(['S', 'M', 'L']);
     //click boots turn to camt
-    const productLink = ref('https://www.camt.cmu.ac.th')
+    //const productLink = ref('https://www.camt.cmu.ac.th')
     const cart = ref(0)
+
+
+    const image = computed(() => {
+      return variants.value[selectedVariant.value].image;
+    });
+    
+    const inStock = computed(() => {
+      return variants.value[selectedVariant.value].quantity > 0;
+    });
+    
+
+    const title = computed(() => {
+      return brand.value + ' ' + product.value
+    })
+
+    const saleMessage = computed(() => {
+      if (onSale.value) {
+        return `${brand.value} ${product.value} is on sale!`;
+      }
+      return '';
+    });
 
     function addToCart() {
       cart.value += 1
+    }
+
+    function updateVariant(index) {
+      selectedVariant.value = index;
     }
 
     function updateImage(variantImage) {
@@ -32,27 +59,42 @@ createApp({
     }
 
     function toggleInStock() {
-      if (inventory.value > 0) {
-        inventory.value = 0
-      } else {
-        inventory.value = 100  // 可以根据需要设置其他值
-      }
+      variants.value[selectedVariant.value].quantity = !variants.value[selectedVariant.value].quantity;
+      // Update onSale based on new quantity
+      onSale.value = variants.value[selectedVariant.value].quantity > 0;
+    }
+  
+    function toggleOnSale() {
+      // 反转促销状态
+      onSale.value = !onSale.value;
     }
 
+    
+
+
       //description,
+      //product,
+      //brand,
+      //        toggleOnSale
     return { 
         product,
+        brand,
+        title,
         image,
         inStock,
         inventory,
         onSale,
+        saleMessage,
         details,
         variants,
         sizes,
         cart,
+        selectedVariant,
+        updateVariant,
         addToCart,
         updateImage,
-        toggleInStock
+        toggleInStock,
+        toggleOnSale
      }
   }
 }).mount('#app')
