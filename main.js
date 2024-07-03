@@ -108,17 +108,38 @@ const { createApp, ref, computed} = Vue
 
 const app = createApp({
   setup(){
-    const cart = ref(0)
+    const cart = ref([])
     const premium = ref(true)
 
-    function updateCart() {
-      cart.value += 1;
+    function updateCart(id) {
+      cart.value.push(id);
     }
+
+    function removeFromCart(id) {
+      const index = cart.value.indexOf(id);
+      if (index > -1) {
+        cart.value.splice(index, 1);
+      }
+    }
+
+    const cartItemCount = computed(() => {
+      const itemCount = {};
+      cart.value.forEach(id => {
+        if (!itemCount[id]) {
+          itemCount[id] = 1;
+        } else {
+          itemCount[id]++;
+        }
+      });
+      return itemCount;
+    });
 
     return {
       cart,
       premium,
-      updateCart
+      cartItemCount,
+      updateCart,
+      removeFromCart,
   }
 }
 })

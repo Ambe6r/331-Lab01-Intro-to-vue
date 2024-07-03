@@ -16,7 +16,7 @@ const productDisplay = {
                     <p v-else>Out of Stock</p>
                     <p>shipping: {{shipping}}</p>
                     <p v-if="onSale && inStock">{{ saleMessage }}</p>
-                    
+
                     <product-details :details = "details"></product-details>
 
                     <div v-for="(variant, index) in variants" :key="variant.id" 
@@ -26,6 +26,7 @@ const productDisplay = {
                     </div>
                     <p>Sizes: {{ sizes.join(', ') }}</p>
                     <button class="button" :disabled="!inStock" @click="addToCart" :class="{ disabledButton: !inStock }"> Add To Cart </button>
+                    <button class="button" @click="removeFromCart">Remove From Cart</button>
                     <button class="button" @click="toggleInStock">Toggle In Stock</button>
                 </div>
   `,
@@ -71,8 +72,13 @@ const productDisplay = {
     }
 
     function addToCart() {
-      emit('add-to-cart');
+      emit('add-to-cart', variants.value[selectedVariant.value].id);
     }
+
+    function removeFromCart() {
+      emit('remove-from-cart', variants.value[selectedVariant.value].id);
+    }
+
 
     function toggleInStock() {
       variants.value[selectedVariant.value].quantity = !variants.value[selectedVariant.value].quantity;
@@ -119,6 +125,7 @@ const productDisplay = {
       shipping,
       updateImage,
       addToCart,
+      removeFromCart,
       updateVariant,
       toggleInStock,
       toggleOnSale
