@@ -1,21 +1,22 @@
 const productDisplay = {
-  template: 
-  `
+  template:
+    /*html*/
+    `
     <div class="product-display">
             <div class="product-container">
                 <div class="product-image">
                     <img :src="image" alt="Product Image" :class="{ 'out-of-stock-image': !inStock }">
                 </div>
+            <!--</div>-->
                 <div class="product-info">
                     <h1>{{ title }}</h1>
-                    <!--
-                    <p>{{description}}</p>
-                    -->
+                    <!--<p>{{description}}</p>-->
                     <p v-if="inventory > 10">In Stock</p>
                     <p v-else-if="inventory <= 10 && inventory > 0">Almost Out of Stock</p>
                     <p v-else>Out of Stock</p>
                     <p>shipping: {{shipping}}</p>
                     <p v-if="onSale && inStock">{{ saleMessage }}</p>
+                    <p>Sizes: {{ sizes.join(', ') }}</p>
 
                     <product-details :details = "details"></product-details>
 
@@ -24,11 +25,15 @@ const productDisplay = {
                     class="color-circle"
                     :style="{backgroundColor: variant.color}">
                     </div>
-                    <p>Sizes: {{ sizes.join(', ') }}</p>
+
                     <button class="button" :disabled="!inStock" @click="addToCart" :class="{ disabledButton: !inStock }"> Add To Cart </button>
                     <button class="button" @click="removeFromCart">Remove From Cart</button>
                     <button class="button" @click="toggleInStock">Toggle In Stock</button>
                 </div>
+                <review-list v-if="reviews.length" :reviews="reviews"></review-list>
+                <review-form @review-submitted="addReview"></review-form>
+                </div>
+    </div>
   `,
 
   props:{
@@ -62,6 +67,13 @@ const productDisplay = {
     const selectedVariant = ref(0);
     const sizes = ref(['S', 'M', 'L']);
     const cart = ref(0);
+
+
+    //review
+    const reviews = ref([])
+    function addReview(review){
+      reviews.value.push(review);
+    }
 
     function updateVariant(index) {
       selectedVariant.value = index;
@@ -123,6 +135,8 @@ const productDisplay = {
       cart,
       selectedVariant,
       shipping,
+      reviews,
+      addReview,
       updateImage,
       addToCart,
       removeFromCart,
